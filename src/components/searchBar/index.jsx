@@ -69,6 +69,21 @@ const CloseIcon = styled(motion.span)`
   }
 `;
 
+const LineSeparator = styled.span`
+  display: flex;
+  min-width: 100%;
+  min-height: 2px;
+  background-color: #d8d8d878;
+`;
+
+const SearchContent = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1em;
+`;
+
 const containerVariants = {
   expanded: {
     height: "20em",
@@ -130,6 +145,8 @@ export function SearchBar(props) {
           )}
         </AnimatePresence>
       </SearchInputContainer>
+      <LineSeparator />
+      <SearchContent>Hello</SearchContent>
     </SearchBarContainer>
   );
 }
