@@ -79,6 +79,8 @@ const containerVariants = {
   },
 };
 
+const containerTransition = { type: "spring", damping: 22, stiffness: 150 };
+
 export function SearchBar(props) {
   const [isExpanded, setExpanded] = useState(false);
   const [ref, isClickedOutside] = useClickOutside();
@@ -99,6 +101,7 @@ export function SearchBar(props) {
     <SearchBarContainer
       animate={isExpanded ? "expanded" : "collapsed"}
       variants={containerVariants}
+      transition={containerTransition}
       ref={ref}
     >
       <SearchInputContainer>
