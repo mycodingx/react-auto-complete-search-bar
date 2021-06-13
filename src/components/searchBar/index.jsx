@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { IoSearch, IoClose } from "react-icons/io5";
 import { motion } from "framer-motion";
+import { useClickOutside } from "react-click-outside-hook";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -80,6 +81,7 @@ const containerVariants = {
 
 export function SearchBar(props) {
   const [isExpanded, setExpanded] = useState(false);
+  const [ref, isClickedOutside] = useClickOutside();
 
   const expandContainer = () => {
     setExpanded(true);
@@ -89,10 +91,15 @@ export function SearchBar(props) {
     setExpanded(false);
   };
 
+  useEffect(() => {
+    if (isClickedOutside) collapseContainer();
+  }, [isClickedOutside]);
+
   return (
     <SearchBarContainer
       animate={isExpanded ? "expanded" : "collapsed"}
       variants={containerVariants}
+      ref={ref}
     >
       <SearchInputContainer>
         <SearchIcon>
