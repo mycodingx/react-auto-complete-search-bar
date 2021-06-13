@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import "./App.css";
+import { SearchBar } from "./components/searchBar";
 
 const AppContainer = styled.div`
   width: 100%;
@@ -10,7 +11,11 @@ const AppContainer = styled.div`
 `;
 
 function App() {
-  return <AppContainer>Hello World..!!</AppContainer>;
+  return (
+    <AppContainer>
+      <SearchBar />
+    </AppContainer>
+  );
 }
 
 export default App;
