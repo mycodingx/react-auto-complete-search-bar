@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { IoSearch, IoClose } from "react-icons/io5";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useClickOutside } from "react-click-outside-hook";
 
 const SearchBarContainer = styled(motion.div)`
@@ -56,7 +56,7 @@ const SearchIcon = styled.span`
   vertical-align: middle;
 `;
 
-const CloseIcon = styled.span`
+const CloseIcon = styled(motion.span)`
   color: #bebebe;
   font-size: 23px;
   margin-top: 6px;
@@ -83,7 +83,8 @@ const containerTransition = { type: "spring", damping: 22, stiffness: 150 };
 
 export function SearchBar(props) {
   const [isExpanded, setExpanded] = useState(false);
-  const [ref, isClickedOutside] = useClickOutside();
+  const [parentRef, isClickedOutside] = useClickOutside();
+  const inputRef = useRef();
 
   const expandContainer = () => {
     setExpanded(true);
@@ -91,6 +92,7 @@ export function SearchBar(props) {
 
   const collapseContainer = () => {
     setExpanded(false);
+    if (inputRef.current) inputRef.current.value = "";
   };
 
   useEffect(() => {
@@ -102,7 +104,7 @@ export function SearchBar(props) {
       animate={isExpanded ? "expanded" : "collapsed"}
       variants={containerVariants}
       transition={containerTransition}
-      ref={ref}
+      ref={parentRef}
     >
       <SearchInputContainer>
         <SearchIcon>
@@ -111,10 +113,22 @@ export function SearchBar(props) {
         <SearchInput
           placeholder="Search for your favorite series.."
           onFocus={expandContainer}
+          ref={inputRef}
         />
-        <CloseIcon onClick={collapseContainer}>
-          <IoClose />
-        </CloseIcon>
+        <AnimatePresence>
+          {isExpanded && (
+            <CloseIcon
+              key="close-icon"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={collapseContainer}
+            >
+              <IoClose />
+            </CloseIcon>
+          )}
+        </AnimatePresence>
       </SearchInputContainer>
     </SearchBarContainer>
   );
