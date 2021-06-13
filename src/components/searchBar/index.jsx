@@ -112,7 +112,7 @@ export function SearchBar(props) {
           placeholder="Search for your favorite series.."
           onFocus={expandContainer}
         />
-        <CloseIcon>
+        <CloseIcon onClick={collapseContainer}>
           <IoClose />
         </CloseIcon>
       </SearchInputContainer>
