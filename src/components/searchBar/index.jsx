@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { IoSearch, IoClose } from "react-icons/io5";
 
 const SearchBarContainer = styled.div`
   display: flex;
@@ -45,11 +46,38 @@ const SearchInput = styled.input`
   }
 `;
 
+const SearchIcon = styled.span`
+  color: #bebebe;
+  font-size: 27px;
+  margin-right: 10px;
+  margin-top: 6px;
+  vertical-align: middle;
+`;
+
+const CloseIcon = styled.span`
+  color: #bebebe;
+  font-size: 23px;
+  margin-top: 6px;
+  vertical-align: middle;
+  transition: all 200ms ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    color: #dfdfdf;
+  }
+`;
+
 export function SearchBar(props) {
   return (
     <SearchBarContainer>
       <SearchInputContainer>
+        <SearchIcon>
+          <IoSearch />
+        </SearchIcon>
         <SearchInput placeholder="Search for your favorite series.." />
+        <CloseIcon>
+          <IoClose />
+        </CloseIcon>
       </SearchInputContainer>
     </SearchBarContainer>
   );
