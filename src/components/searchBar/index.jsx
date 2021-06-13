@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { IoSearch, IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { useClickOutside } from "react-click-outside-hook";
+import MoonLoader from "react-spinners/MoonLoader";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -84,6 +85,14 @@ const SearchContent = styled.div`
   padding: 1em;
 `;
 
+const LoadingWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const containerVariants = {
   expanded: {
     height: "20em",
@@ -146,7 +155,11 @@ export function SearchBar(props) {
         </AnimatePresence>
       </SearchInputContainer>
       <LineSeparator />
-      <SearchContent>Hello</SearchContent>
+      <SearchContent>
+        <LoadingWrapper>
+          <MoonLoader loading color="#000" size={20} />
+        </LoadingWrapper>
+      </SearchContent>
     </SearchBarContainer>
   );
 }
