@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { IoSearch, IoClose } from "react-icons/io5";
+import { motion } from "framer-motion";
 
-const SearchBarContainer = styled.div`
+const SearchBarContainer = styled(motion.div)`
   display: flex;
   flex-direction: column;
   width: 34em;
@@ -67,14 +68,40 @@ const CloseIcon = styled.span`
   }
 `;
 
+const containerVariants = {
+  expanded: {
+    height: "20em",
+  },
+
+  collapsed: {
+    height: "3.8em",
+  },
+};
+
 export function SearchBar(props) {
+  const [isExpanded, setExpanded] = useState(false);
+
+  const expandContainer = () => {
+    setExpanded(true);
+  };
+
+  const collapseContainer = () => {
+    setExpanded(false);
+  };
+
   return (
-    <SearchBarContainer>
+    <SearchBarContainer
+      animate={isExpanded ? "expanded" : "collapsed"}
+      variants={containerVariants}
+    >
       <SearchInputContainer>
         <SearchIcon>
           <IoSearch />
         </SearchIcon>
-        <SearchInput placeholder="Search for your favorite series.." />
+        <SearchInput
+          placeholder="Search for your favorite series.."
+          onFocus={expandContainer}
+        />
         <CloseIcon>
           <IoClose />
         </CloseIcon>
