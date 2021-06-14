@@ -6,6 +6,7 @@ import { useClickOutside } from "react-click-outside-hook";
 import MoonLoader from "react-spinners/MoonLoader";
 import { useDebounce } from "../../hooks/debounceHook";
 import axios from "axios";
+import { TvShow } from "../tvShow";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -85,6 +86,7 @@ const SearchContent = styled.div`
   display: flex;
   flex-direction: column;
   padding: 1em;
+  overflow-y: auto;
 `;
 
 const LoadingWrapper = styled.div`
@@ -95,9 +97,17 @@ const LoadingWrapper = styled.div`
   justify-content: center;
 `;
 
+const WarningMessage = styled.span`
+  color: #a1a1a1;
+  font-size: 14px;
+  display: flex;
+  align-self: center;
+  justify-self: center;
+`;
+
 const containerVariants = {
   expanded: {
-    height: "20em",
+    height: "30em",
   },
 
   collapsed: {
@@ -113,9 +123,17 @@ export function SearchBar(props) {
   const inputRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setLoading] = useState(false);
+  const [tvShows, setTvShows] = useState([]);
+  const [noTvShows, setNoTvShows] = useState(false);
+
+  const isEmpty = !tvShows || tvShows.length === 0;
 
   const changeHandler = (e) => {
     e.preventDefault();
+    if (e.target.value.trim() === "") {
+      setNoTvShows(false);
+      setTvShows([]);
+    }
     setSearchQuery(e.target.value);
   };
 
@@ -127,6 +145,8 @@ export function SearchBar(props) {
     setExpanded(false);
     setSearchQuery("");
     setLoading(false);
+    setNoTvShows(false);
+    setTvShows([]);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -142,14 +162,18 @@ export function SearchBar(props) {
   const searchTvShow = async () => {
     if (!searchQuery || searchQuery.trim() === "") return;
     setLoading(true);
+    setNoTvShows(false);
     const URL = prepareSearchQuery(searchQuery);
     const response = await axios.get(URL).catch((err) => {
       console.log("error");
     });
 
     if (response) {
-      console.log("Response: ", response.data);
+      //console.log("Response: ", response.data);
+      if (response.data && response.data.length === 0) setNoTvShows(true);
+      setTvShows(response.data);
     }
+    setLoading(false);
   };
 
   useDebounce(searchQuery, 500, searchTvShow);
@@ -187,14 +211,38 @@ export function SearchBar(props) {
           )}
         </AnimatePresence>
       </SearchInputContainer>
-      <LineSeparator />
-      <SearchContent>
-        {isLoading && (
-          <LoadingWrapper>
-            <MoonLoader loading color="#000" size={20} />
-          </LoadingWrapper>
-        )}
-      </SearchContent>
+      {isExpanded && <LineSeparator />}
+      {isExpanded && (
+        <SearchContent>
+          {isLoading && (
+            <LoadingWrapper>
+              <MoonLoader loading color="#000" size={20} />
+            </LoadingWrapper>
+          )}
+          {!isLoading && isEmpty && !noTvShows && (
+            <LoadingWrapper>
+              <WarningMessage>Start tying to search...!!</WarningMessage>
+            </LoadingWrapper>
+          )}
+          {!isLoading && noTvShows && (
+            <LoadingWrapper>
+              <WarningMessage>No TV shows or series found...!!</WarningMessage>
+            </LoadingWrapper>
+          )}
+          {!isLoading && !isEmpty && (
+            <React.Fragment>
+              {tvShows.map(({ show }) => (
+                <TvShow
+                  key={show.id}
+                  thumbnailSrc={show.image && show.image.medium}
+                  name={show.name}
+                  rating={show.rating && show.rating.average}
+                />
+              ))}
+            </React.Fragment>
+          )}
+        </SearchContent>
+      )}
     </SearchBarContainer>
   );
 }
