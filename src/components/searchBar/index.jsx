@@ -109,6 +109,12 @@ export function SearchBar(props) {
   const [isExpanded, setExpanded] = useState(false);
   const [parentRef, isClickedOutside] = useClickOutside();
   const inputRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const changeHandler = (e) => {
+    e.preventDefault();
+    setSearchQuery(e.target.value);
+  };
 
   const expandContainer = () => {
     setExpanded(true);
@@ -116,12 +122,15 @@ export function SearchBar(props) {
 
   const collapseContainer = () => {
     setExpanded(false);
+    setSearchQuery("");
     if (inputRef.current) inputRef.current.value = "";
   };
 
   useEffect(() => {
     if (isClickedOutside) collapseContainer();
   }, [isClickedOutside]);
+
+  const searchTvShow = () => {};
 
   return (
     <SearchBarContainer
@@ -138,6 +147,8 @@ export function SearchBar(props) {
           placeholder="Search for your favorite series.."
           onFocus={expandContainer}
           ref={inputRef}
+          value={searchQuery}
+          onChange={changeHandler}
         />
         <AnimatePresence>
           {isExpanded && (
