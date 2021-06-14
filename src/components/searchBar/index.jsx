@@ -4,6 +4,8 @@ import { IoSearch, IoClose } from "react-icons/io5";
 import { motion, AnimatePresence } from "framer-motion";
 import { useClickOutside } from "react-click-outside-hook";
 import MoonLoader from "react-spinners/MoonLoader";
+import { useDebounce } from "../../hooks/debounceHook";
+import axios from "axios";
 
 const SearchBarContainer = styled(motion.div)`
   display: flex;
@@ -110,6 +112,7 @@ export function SearchBar(props) {
   const [parentRef, isClickedOutside] = useClickOutside();
   const inputRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setLoading] = useState(false);
 
   const changeHandler = (e) => {
     e.preventDefault();
@@ -123,6 +126,7 @@ export function SearchBar(props) {
   const collapseContainer = () => {
     setExpanded(false);
     setSearchQuery("");
+    setLoading(false);
     if (inputRef.current) inputRef.current.value = "";
   };
 
@@ -130,7 +134,25 @@ export function SearchBar(props) {
     if (isClickedOutside) collapseContainer();
   }, [isClickedOutside]);
 
-  const searchTvShow = () => {};
+  const prepareSearchQuery = (query) => {
+    const url = `http://api.tvmaze.com/search/shows?q=${query}`;
+    return encodeURI(url);
+  };
+
+  const searchTvShow = async () => {
+    if (!searchQuery || searchQuery.trim() === "") return;
+    setLoading(true);
+    const URL = prepareSearchQuery(searchQuery);
+    const response = await axios.get(URL).catch((err) => {
+      console.log("error");
+    });
+
+    if (response) {
+      console.log("Response: ", response.data);
+    }
+  };
+
+  useDebounce(searchQuery, 500, searchTvShow);
 
   return (
     <SearchBarContainer
@@ -167,9 +189,11 @@ export function SearchBar(props) {
       </SearchInputContainer>
       <LineSeparator />
       <SearchContent>
-        <LoadingWrapper>
-          <MoonLoader loading color="#000" size={20} />
-        </LoadingWrapper>
+        {isLoading && (
+          <LoadingWrapper>
+            <MoonLoader loading color="#000" size={20} />
+          </LoadingWrapper>
+        )}
       </SearchContent>
     </SearchBarContainer>
   );
