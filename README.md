@@ -1,6 +1,8 @@
 # React Auto Complete Search Bar
 
-Required/Used Dependencies
+<img src="./src/assets/screenshot" alt="Project Screenshot" />
+
+### Required/Used Dependencies
 
 - axios
 - framer-motion
@@ -8,3 +10,10 @@ Required/Used Dependencies
 - react-icons
 - react-spinners
 - styled-components
+
+## Topics covered
+
+- Styled Components
+- Custom Hooks
+- Data fetching using axios
+- React Hooks
